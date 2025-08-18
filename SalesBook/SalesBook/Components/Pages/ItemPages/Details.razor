@@ -1,0 +1,59 @@
+@page "/items/details"
+@using Microsoft.EntityFrameworkCore
+@using SalesBook
+@using SalesBook.Data
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Item</h2>
+    <hr />
+    @if (item is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-4">Name of Item: </dt>
+            <dd class="col-sm-8">@item.ItemName</dd>
+            <dt class="col-sm-4">Abbreviation</dt>
+            <dd class="col-sm-8">@item.Abbreviation</dd>
+            <dt class="col-sm-4">Type of packaging : </dt>
+            <dd class="col-sm-8">@item.PackageType</dd>
+            <dt class="col-sm-4">Number per Crate/Carton : </dt>
+            <dd class="col-sm-8">@item.ItemQuantityPerPackage</dd>
+            <dt class="col-sm-4">Cost Per Package</dt>
+            <dd class="col-sm-8">@item.CostPerPackage</dd>
+            <dt class="col-sm-4">Selling Price Per Package</dt>
+            <dd class="col-sm-8">@item.PricePerPackage</dd>
+            <dt class="col-sm-4">Selling Price Per Unit</dt>
+            <dd class="col-sm-8">@item.PricePerUnit</dd>
+        </dl>
+        <div>
+            <a href="@($"/items/edit?id={item.Id}")">Edit</a> |
+            <a href="@($"/items")">Back to List</a>|<a href="@($"/items/delete?id={item.Id}")">Delete</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Item? item;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        item = await context.Item.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (item is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

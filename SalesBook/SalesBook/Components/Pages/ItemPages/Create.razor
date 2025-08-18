@@ -1,0 +1,82 @@
+@page "/items/create"
+@using Microsoft.EntityFrameworkCore
+@using SalesBook
+@using SalesBook.Data
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Item</h2>
+<hr />
+<div class="row">
+    <div class="col-md-10">
+        <EditForm method="post" Model="Item" OnValidSubmit="AddItem" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+	    <div class="row">
+	    <div class = "col-sm-6">
+            <div class="mb-3">
+                <label for="itemname" class="form-label">Item Name:</label> 
+                <InputText id="itemname" @bind-Value="Item.ItemName" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Item.ItemName" class="text-danger" /> 
+            </div>        
+
+            <div class="mb-3">
+                <label for="packagetype" class="form-label">Package Type:</label> 
+                <InputSelect id="packagetype" @bind-Value="Item.PackageType" class="form-control" >
+			@foreach(var option in options){
+				<option value=@option>@option </option>
+			}
+		</InputSelect> 
+                <ValidationMessage For="() => Item.PackageType" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="itemquantityperpackage" class="form-label">Quantity per Package:</label> 
+                <InputNumber id="itemquantityperpackage" @bind-Value="Item.ItemQuantityPerPackage" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Item.ItemQuantityPerPackage" class="text-danger" /> 
+            </div>        
+	    </div>
+	    <div class="col-sm-6">
+            <div class="mb-3">
+                <label for="costperpackage" class="form-label">Cost Per Package:</label> 
+                <InputNumber id="costperpackage" @bind-Value="Item.CostPerPackage" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Item.CostPerPackage" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="priceperpackage" class="form-label">Wholesale Price :</label> 
+                <InputNumber id="priceperpackage" @bind-Value="Item.PricePerPackage" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Item.PricePerPackage" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="priceperunit" class="form-label">Price Per Unit:</label> 
+                <InputNumber id="priceperunit" @bind-Value="Item.PricePerUnit" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Item.PricePerUnit" class="text-danger" /> 
+            </div>                
+	    </div>
+	    </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/items">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Item Item { get; set; } = new();
+    private string[] options = {"Crate", "Carton", "Palette","Single" };
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddItem()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Item.Add(Item);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/items");
+    }
+}

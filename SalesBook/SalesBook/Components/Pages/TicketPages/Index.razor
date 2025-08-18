@@ -1,0 +1,39 @@
+@page "/tickets"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using SalesBook
+@using SalesBook.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="tickets/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Ticket">
+    <PropertyColumn Property="ticket => ticket.TableNumber" />
+    <PropertyColumn Property="ticket => ticket.ClientName" />
+    <PropertyColumn Property="ticket => ticket.CreatedAt" />
+    <PropertyColumn Property="ticket => ticket.UpdatedAt" />
+
+    <TemplateColumn Context="ticket">
+        <a href="@($"tickets/edit?id={ticket.Id}")">Edit</a> |
+        <a href="@($"tickets/details?id={ticket.Id}")">Details</a> |
+        <a href="@($"tickets/delete?id={ticket.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private ApplicationDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

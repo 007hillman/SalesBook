@@ -1,0 +1,42 @@
+@page "/items"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using SalesBook
+@using SalesBook.Data
+@implements IAsyncDisposable
+@inject NavigationManager NavigationManager
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="items/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Item">
+		<TemplateColumn Context="item" Title="Name">
+			<div @onclick="() =>OnNameClick(item) "> @item.ItemName </div>
+		</TemplateColumn>
+    		<PropertyColumn Property="item => item.ItemQuantityPerPackage" Title="Quantity per Package"/>
+    		<PropertyColumn Property="item => item.CostPerPackage" Title="Cost"/>
+    		<PropertyColumn Property="item => item.PricePerPackage" Title="Wholesale Price"/>
+    		<PropertyColumn Property="item => item.PricePerUnit" Title="Retail Price"/>
+	<TemplateColumn Context="item">
+	<a href="@($"/items/details?id={ item.Id}")">Details</a>
+	</TemplateColumn>
+</QuickGrid>
+
+@code {
+    private ApplicationDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+    public void OnNameClick(Item item){
+	NavigationManager.NavigateTo($"/items/details/{item.Id}");
+	}
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

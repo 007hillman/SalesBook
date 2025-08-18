@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SalesBook", "SalesBook", "{6F963E3E-7044-42AF-A3D0-E5E9F807375F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesBook", "SalesBook\SalesBook\SalesBook.csproj", "{6DA11162-7A8D-4013-A43A-B6994C5ED116}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesBook.Client", "SalesBook\SalesBook.Client\SalesBook.Client.csproj", "{2786651B-7C3A-48F0-ADA2-DC16D786EC1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6DA11162-7A8D-4013-A43A-B6994C5ED116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DA11162-7A8D-4013-A43A-B6994C5ED116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DA11162-7A8D-4013-A43A-B6994C5ED116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DA11162-7A8D-4013-A43A-B6994C5ED116}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2786651B-7C3A-48F0-ADA2-DC16D786EC1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2786651B-7C3A-48F0-ADA2-DC16D786EC1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2786651B-7C3A-48F0-ADA2-DC16D786EC1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2786651B-7C3A-48F0-ADA2-DC16D786EC1A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6DA11162-7A8D-4013-A43A-B6994C5ED116} = {6F963E3E-7044-42AF-A3D0-E5E9F807375F}
+		{2786651B-7C3A-48F0-ADA2-DC16D786EC1A} = {6F963E3E-7044-42AF-A3D0-E5E9F807375F}
+	EndGlobalSection
+EndGlobal

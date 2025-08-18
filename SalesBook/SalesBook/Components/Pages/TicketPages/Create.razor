@@ -1,0 +1,198 @@
+@page "/tickets/create"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using SalesBook
+@using SalesBook.Data
+@using SalesBook.Utility
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Ticket</h2>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+                    <EditForm method="post" Model="Ticket" OnValidSubmit="AddTicket" FormName="create" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Ticket.Id" value="@Ticket.Id" />
+		<div class="row mb-3">
+                <div class="mb-3 col-md-4">
+                    <label for="tablenumber" class="form-label">TableNumber:</label>
+                    <InputNumber id="tablenumber" @bind-Value="Ticket.TableNumber" class="form-control" />
+                    <ValidationMessage For="() => Ticket.TableNumber" class="text-danger" />
+                </div>
+                <div class="mb-3 col-md-4">
+                    <label for="clientname" class="form-label">ClientName:</label>
+                    <InputText id="clientname" @bind-Value="Ticket.ClientName" class="form-control" />
+                    <ValidationMessage For="() => Ticket.ClientName" class="text-danger" />
+                </div>
+                <div class="mb-3 d-none col-md-2">
+                    <label for="createdat" class="form-label">CreatedAt:</label>
+                    <InputDate id="createdat" @bind-Value="Ticket.CreatedAt" class="form-control" />
+                    <ValidationMessage For="() => Ticket.CreatedAt" class="text-danger" />
+                </div>
+                <div class="mb-3 d-none col-md-2">
+                    <label for="updatedat" class="form-label">UpdatedAt:</label>
+                    <InputDate id="updatedat" @bind-Value="Ticket.UpdatedAt" class="form-control" />
+                    <ValidationMessage For="() => Ticket.UpdatedAt" class="text-danger" />
+                </div>
+		</div>
+		<div class="row mb-10">
+			<div class="col-md-8 d-flex d-flex-row gap-4">
+					<InputSelect @bind-Value="order_record.ItemId" class="form-control">
+						@foreach(var Item in Items)
+						{
+							<option value="@Item.Id" key="@Item.Id">@Item.ItemName</option>
+						}
+					</InputSelect>
+				<InputNumber @bind-Value="order_record.Quantity" class="form-control"/>
+				<button type="button" class="btn btn-info" @onclick="AddItem">Add</button>
+			</div>
+		</div>
+           	<div class="row border border-1  p-3 gap-3 mt-3">
+				@if(displayList == null || displayList.Count == 0){
+					<p>No Items added yet...</p>
+				}else {
+					@foreach (var obj in displayList){
+						<div class="@ChangeColor(obj)" @onmousedown="StartClick" @onmouseup="(e) => EndClick(e,obj)" @onclick="(e)=> HandleClick(e,obj)">
+							@if(obj !=  null){
+								<p>@obj._item.Abbreviation</p>
+								<p>@obj._count</p>
+							}
+						</div>
+					}
+				}
+			</div>
+                <hr/>
+		<QuickGrid Items="@records.AsQueryable()" Class="table table-striped" >
+			<PropertyColumn Property="rec => Items.Where(i => i.Id == rec.ItemId).ToList()[0].ItemName" Title="Name" />
+			<PropertyColumn Property="rec => rec.Quantity" Title="Quantity"/>
+			<PropertyColumn Property="rec => Items.Where(i => i.Id == rec.ItemId).ToList()[0].PricePerUnit" Title="Unit Price"  />
+			<PropertyColumn Property="rec => rec.GetTotalPrice(Items.Where(i => i.Id == rec.ItemId).ToList()[0].PricePerUnit)" Title="Total Price" />
+			<TemplateColumn Context="rec">
+				<button type="button" @onclick="() => RemoveRecord(rec)" class="btn btn-danger">remove </button>
+			</TemplateColumn>
+		</QuickGrid>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+    </div>
+</div>
+
+<div class="mt-5">
+    <a href="/tickets">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+     private Ticket Ticket{get; set;} = new();
+
+	private ItemTicket order_record = new ItemTicket();
+	private ICollection<ItemDisplay> displayList = new List<ItemDisplay>();
+	private ICollection<Item> Items = new List<Item>();
+    private ICollection<ItemTicket> records = new List<ItemTicket>();
+		
+	protected override void OnInitialized()
+	{
+		using var context = DbFactory.CreateDbContext();
+		Items = context.Item.ToList();
+		PopulateDisplay();
+	}
+    private void AddItem()
+	{
+		order_record.TicketId = Ticket.Id;
+		if(records.Any(r => r.ItemId == order_record.ItemId)){
+			if(order_record.Quantity <= 0 ){
+				records.Remove(records.Where(r => r.ItemId == order_record.ItemId).ToList()[0]);
+			}else{
+			records.Where(r => r.ItemId == order_record.ItemId).ToList()[0].Quantity = order_record.Quantity;
+			}
+			
+		}else{
+			records.Add(order_record);
+			
+		}
+		displayList.Where(l => l._item.Id == order_record.ItemId).ToList()[0]._count = (int)order_record.Quantity;
+		order_record = new ItemTicket();
+	}
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddTicket()
+    {
+        using var context = DbFactory.CreateDbContext();
+	using var transaction = await context.Database.BeginTransactionAsync();
+	try{
+        	context.Ticket.Add(Ticket);
+        	await context.SaveChangesAsync();
+		context.ItemTicket.AddRange(records);
+		await context.SaveChangesAsync();
+		await transaction.CommitAsync();
+        	NavigationManager.NavigateTo("/tickets");
+	}catch{
+		await transaction.RollbackAsync();
+	}
+    }
+	public void SaveItems()
+	{
+		foreach(var rec in records)
+		{
+			Ticket.ItemTickets.Add(rec);
+		}	
+	}
+    public void RemoveRecord(ItemTicket rec)
+	{
+		records.Remove(rec);
+		displayList.Where(l => l._item.Id == rec.ItemId).ToList()[0]._count = 0;
+	}
+    public void PopulateDisplay()
+	{
+		using var context = DbFactory.CreateDbContext();
+		var refList = context.ItemTicket.ToList().GroupBy(i => i.ItemId)
+			.Select(group => new ItemDisplay(Items.Where(i => i.Id == group.Key).ToList()[0], group.Count())).ToList();
+		foreach(var item in Items){
+			if(refList.Any(i => i._item.Id == item.Id )){
+				displayList.Add(refList.Where(l => l._item.Id == item.Id).ToList()[0]);
+			}else{
+				displayList.Add(new ItemDisplay(item,0));
+			}
+		}
+	}
+	private bool isLongClick;
+	private DateTime mouseDownTime;
+	private const int LongClickThreshold = 1000;
+	public void StartClick()
+	{
+		mouseDownTime = DateTime.Now;
+		isLongClick = false;
+	}
+	public void EndClick(MouseEventArgs e, ItemDisplay it)
+	{
+	
+		var duration = (DateTime.Now - mouseDownTime).TotalMilliseconds;
+		isLongClick = duration >= LongClickThreshold;	
+		if(isLongClick)
+			it.ChangeState();
+	}
+	public string ChangeColor(ItemDisplay it)
+	{
+		var color = it._increase? "border-info" : "border-danger";
+		return $"col-sm-2 border p-2 border-2 {color}";
+	}
+	public void HandleClick(MouseEventArgs e, ItemDisplay it)
+	{
+		if(it._increase){
+			it.IncreaseCount();
+		}else{
+			if(it._count == 0) return;
+			if(it._count > 0 )it.DecreaseCount();
+		}
+		        order_record.ItemId = it._item.Id;
+                        order_record.Quantity = it._count;
+			AddItem();
+			
+
+	}
+}

@@ -1,0 +1,77 @@
+@page "/tickets/details"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using SalesBook
+@using SalesBook.Data
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Ticket</h2>
+    <hr />
+    @if (ticket is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Table Number</dt>
+            <dd class="col-sm-10">@ticket.TableNumber</dd>
+            <dt class="col-sm-2">Client Name</dt>
+            <dd class="col-sm-10">@ticket.ClientName</dd>
+            <dt class="col-sm-2">Date Issued :</dt>
+            <dd class="col-sm-10">@ticket.CreatedAt</dd>
+            <dt class="col-sm-2">Date Changed : </dt>
+            <dd class="col-sm-10">@ticket.UpdatedAt</dd>
+        </dl>
+        <div>
+            <a href="@($"/tickets/edit?id={ticket.Id}")">Edit</a> |
+            <a href="@($"/tickets")">Back to List</a>
+        </div>
+         <table class="table table-striped">
+		<thead>
+			<td>Item Name : </td>
+                       <td>Quantity : </td>
+                       <td>Unit price : </td>
+                       <td>Total Price : </td>
+		</thead>
+		<tbody>
+		@if(ticket != null){
+			@foreach(var entry in ticket.ItemTickets ){
+				<tr>
+					<td>@entry.Item.ItemName</td>
+                                        <td>@entry.Quantity</td>
+                                        <td>@entry.Item.PricePerUnit</td>
+                                        <td>@(entry.Item.PricePerUnit * entry.Quantity)</td>
+				</tr>	
+				}
+			}
+		</tbody>
+	</table>
+
+    }
+</div>
+
+@code {
+    private Ticket? ticket;
+    private int quantity;
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    
+    private ICollection<Item> Items = new List<Item>(); 
+    protected override async Task OnInitializedAsync()
+    {
+	    	using var context = DbFactory.CreateDbContext();
+        	ticket = await context.Ticket.Include(t => t.ItemTickets)
+					.ThenInclude(it => it.Item).FirstOrDefaultAsync(t => t.Id == Id);
+        	if (ticket is null)
+        	{
+            		NavigationManager.NavigateTo("notfound");
+        	}
+    }
+}

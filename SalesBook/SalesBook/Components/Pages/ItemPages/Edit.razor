@@ -1,0 +1,127 @@
+@page "/items/edit"
+@using Microsoft.EntityFrameworkCore
+@using SalesBook
+@using SalesBook.Data
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Item</h2>
+<hr />
+@if (Item is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Item" OnValidSubmit="UpdateItem" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Item.Id" value="@Item.Id" />
+		<div class = "row">
+		<div class= "col-sm-6">
+                <div class="mb-3">
+                    <label for="itemname" class="form-label">Item Name:</label>
+                    <InputText id="itemname" @bind-Value="Item.ItemName" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Item.ItemName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="packagetype" class="form-label">Package Type:</label>
+                    <InputSelect id="packagetype" @bind-Value="Item.PackageType" class="form-control" >
+                 
+                        @foreach(var option in options){
+                            <option value=@option>@option </option>
+                        }
+                    </InputSelect>
+
+                    <ValidationMessage For="() => Item.PackageType" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="itemquantityperpackage" class="form-label">Quantity Per @Item.PackageType:</label>
+                    <InputNumber id="itemquantityperpackage" @bind-Value="Item.ItemQuantityPerPackage" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Item.ItemQuantityPerPackage" class="text-danger" />
+                </div>
+		</div>
+		<div class="col-sm-6">
+                <div class="mb-3">
+                    <label for="costperpackage" class="form-label">Cost Per @Item.PackageType :</label>
+                    <InputNumber id="costperpackage" @bind-Value="Item.CostPerPackage" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Item.CostPerPackage" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="priceperpackage" class="form-label">Price Per @Item.PackageType:</label>
+                    <InputNumber id="priceperpackage" @bind-Value="Item.PricePerPackage" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Item.PricePerPackage" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="priceperunit" class="form-label">Price Per Unit:</label>
+                    <InputNumber id="priceperunit" @bind-Value="Item.PricePerUnit" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Item.PricePerUnit" class="text-danger" />
+                </div>
+                </div>
+		</div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/items">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Item? Item { get; set; }
+    private string[] options = {"Crate", "Carton", "Palette","Single" };
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Item ??= await context.Item.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Item is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateItem()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Item!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ItemExists(Item!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/items");
+    }
+
+    private bool ItemExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Item.Any(e => e.Id == id);
+    }
+}
