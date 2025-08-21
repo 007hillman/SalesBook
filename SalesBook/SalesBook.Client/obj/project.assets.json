@@ -454,13 +454,13 @@
           }
         }
       },
-      "Microsoft.NET.ILLink.Tasks/9.0.7": {
+      "Microsoft.NET.ILLink.Tasks/9.0.3": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
         }
       },
-      "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.7": {
+      "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.3": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.Sdk.WebAssembly.Pack.props": {},
@@ -921,13 +921,13 @@
           }
         }
       },
-      "Microsoft.NET.ILLink.Tasks/9.0.7": {
+      "Microsoft.NET.ILLink.Tasks/9.0.3": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
         }
       },
-      "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.7": {
+      "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.3": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.Sdk.WebAssembly.Pack.props": {},
@@ -1590,10 +1590,10 @@
         "microsoft.jsinterop.webassembly.nuspec"
       ]
     },
-    "Microsoft.NET.ILLink.Tasks/9.0.7": {
-      "sha512": "UvLCVpsfLEd0A+3WQrI+tdlOY6nxoz+FmLpYaH2c9AETrnbRe26+yJbd3y59nBs85P+isnQH0PwZMAZpVvT+sw==",
+    "Microsoft.NET.ILLink.Tasks/9.0.3": {
+      "sha512": "PMKzv4LihunzeKI5uFMNscnMbqpUMS6/cDiN/qu674U0HvOweOXPG+QDJ6cs0pkFzkpFlFQ/KZLlbNpNkuKLeA==",
       "type": "package",
-      "path": "microsoft.net.illink.tasks/9.0.7",
+      "path": "microsoft.net.illink.tasks/9.0.3",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
@@ -1606,7 +1606,7 @@
         "build/Microsoft.NET.ILLink.Analyzers.props",
         "build/Microsoft.NET.ILLink.Tasks.props",
         "build/Microsoft.NET.ILLink.targets",
-        "microsoft.net.illink.tasks.9.0.7.nupkg.sha512",
+        "microsoft.net.illink.tasks.9.0.3.nupkg.sha512",
         "microsoft.net.illink.tasks.nuspec",
         "tools/net9.0/ILLink.Tasks.deps.json",
         "tools/net9.0/ILLink.Tasks.dll",
@@ -1624,10 +1624,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.7": {
-      "sha512": "5ehgbqGUERh0JVhTUPwFizw4hIoAglkFk/WMs45djePp16YHP11Vnmx44rOQ3gLW8/aDYN1j+pKdAtcEp4QOcw==",
+    "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.3": {
+      "sha512": "DMmycEIk9lhnpvDMYprPo0eCJNv0g3jujnpREkormE8wQ8NfWjuh+Sj66V4FS+e+OE1jws4FbKdat0GPWwA92g==",
       "type": "package",
-      "path": "microsoft.net.sdk.webassembly.pack/9.0.7",
+      "path": "microsoft.net.sdk.webassembly.pack/9.0.3",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
@@ -1658,7 +1658,7 @@
         "build/Microsoft.NET.Sdk.WebAssembly.Pack.targets",
         "build/Wasm.web.config",
         "build/browser.runtimeconfig.template.json",
-        "microsoft.net.sdk.webassembly.pack.9.0.7.nupkg.sha512",
+        "microsoft.net.sdk.webassembly.pack.9.0.3.nupkg.sha512",
         "microsoft.net.sdk.webassembly.pack.nuspec",
         "tools/net472/Microsoft.NET.Sdk.WebAssembly.Pack.Tasks.dll",
         "tools/net472/Microsoft.NET.WebAssembly.Webcil.dll",
@@ -1671,24 +1671,24 @@
     "net9.0": [
       "Microsoft.AspNetCore.Components.WebAssembly >= 9.0.7",
       "Microsoft.AspNetCore.Components.WebAssembly.Authentication >= 9.0.7",
-      "Microsoft.NET.ILLink.Tasks >= 9.0.7",
-      "Microsoft.NET.Sdk.WebAssembly.Pack >= 9.0.7"
+      "Microsoft.NET.ILLink.Tasks >= 9.0.3",
+      "Microsoft.NET.Sdk.WebAssembly.Pack >= 9.0.3"
     ]
   },
   "packageFolders": {
-    "/home/bedota/.nuget/packages/": {}
+    "/home/gaia/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/bedota/dotnet/SalesBook/SalesBook/SalesBook.Client/SalesBook.Client.csproj",
+      "projectUniqueName": "/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/SalesBook.Client.csproj",
       "projectName": "SalesBook.Client",
-      "projectPath": "/home/bedota/dotnet/SalesBook/SalesBook/SalesBook.Client/SalesBook.Client.csproj",
-      "packagesPath": "/home/bedota/.nuget/packages/",
-      "outputPath": "/home/bedota/dotnet/SalesBook/SalesBook/SalesBook.Client/obj/",
+      "projectPath": "/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/SalesBook.Client.csproj",
+      "packagesPath": "/home/gaia/.nuget/packages/",
+      "outputPath": "/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/bedota/.nuget/NuGet/NuGet.Config"
+        "/home/gaia/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -1730,13 +1730,13 @@
           "Microsoft.NET.ILLink.Tasks": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[9.0.7, )",
+            "version": "[9.0.3, )",
             "autoReferenced": true
           },
           "Microsoft.NET.Sdk.WebAssembly.Pack": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[9.0.7, )",
+            "version": "[9.0.3, )",
             "autoReferenced": true
           }
         },
@@ -1754,7 +1754,7 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
-            "version": "[9.0.7, 9.0.7]"
+            "version": "[9.0.3, 9.0.3]"
           }
         ],
         "frameworkReferences": {
@@ -1762,7 +1762,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.108/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.104/PortableRuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

@@ -1,6 +1,6 @@
 @page "/items/details"
 @using Microsoft.EntityFrameworkCore
-@using SalesBook
+@using SalesBook.Models
 @using SalesBook.Data
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -49,7 +49,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        item = await context.Item.FirstOrDefaultAsync(m => m.Id == Id);
+        item = await context.Items.FirstOrDefaultAsync(m => m.Id == Id);
 
         if (item is null)
         {

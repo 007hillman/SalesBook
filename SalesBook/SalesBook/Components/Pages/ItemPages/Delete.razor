@@ -1,6 +1,6 @@
 @page "/items/delete"
 @using Microsoft.EntityFrameworkCore
-@using SalesBook
+@using SalesBook.Models
 @using SalesBook.Data
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -70,7 +70,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        item = await context.Item.FirstOrDefaultAsync(m => m.Id == Id);
+        item = await context.Items.FirstOrDefaultAsync(m => m.Id == Id);
 
         if (item is null)
         {
@@ -81,7 +81,7 @@
     private async Task DeleteItem()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Item.Remove(item!);
+        context.Items.Remove(item!);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/items");
     }

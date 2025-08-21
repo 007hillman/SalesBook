@@ -1,24 +1,28 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
+using SalesBook.Models;
 namespace SalesBook.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options){}
-	public DbSet<Item> Item {get; set; }
-	public DbSet<Ticket> Ticket {get; set;}
-	public DbSet<ItemTicket> ItemTicket {get; set; }
+	public DbSet<Item> Items {get; set; }
+	public DbSet<Ticket> Tickets {get; set;}
+	public DbSet<Order> Orders { get; set; }
 		
 	protected override void OnModelCreating(ModelBuilder builder){
-		builder.Entity<ItemTicket>()
-			.HasOne(it => it.Item)
-			.WithMany(i => i.ItemTickets)
-			.HasForeignKey(it => it.ItemId);
-		builder.Entity<ItemTicket>()
-			.HasOne(it => it.Ticket)
-			.WithMany(t => t.ItemTickets)
-			.HasForeignKey(it => it.TicketId);
+
+		builder.Entity<Order>()
+			.HasOne(o => o.Item)
+			.WithMany()
+			.HasForeignKey(o => o.ItemId)
+			.OnDelete(DeleteBehavior.Restrict);
+		builder.Entity<Order>()
+			.HasOne(o => o.Ticket)
+			.WithMany(t => t.Orders)
+			.HasForeignKey(o => o.TicketId)
+			.OnDelete(DeleteBehavior.Cascade);
+
 		base.OnModelCreating(builder);
 	}
 }

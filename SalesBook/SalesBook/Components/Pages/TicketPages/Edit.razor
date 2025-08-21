@@ -1,9 +1,9 @@
 @page "/tickets/edit"
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
-@using SalesBook
-@using SalesBook.Data
+@using SalesBook.Models
 @using SalesBook.Utility
+@using SalesBook.Data
 @rendermode InteractiveServer
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -48,42 +48,53 @@ else
                     <ValidationMessage For="() => Ticket.UpdatedAt" class="text-danger" />
                 </div>
             </div>
-		<div class="row mb-10">
-			<div class="col-md-8 d-flex d-flex-row gap-4">
-					<InputSelect @bind-Value="order_record.ItemId" class="form-control">
-						@foreach(var Item in Items)
-						{
-							<option value="@Item.Id" key="@Item.Id">@Item.ItemName</option>
-						}
-					</InputSelect>
-				<InputNumber @bind-Value="order_record.Quantity" class="form-control"/>
-				<button type="button" class="btn btn-info" @onclick="AddItem">Add</button>
-			</div>
-		</div>
-           	<div class="row border border-1  p-3 gap-3 mt-3">
-				@if(displayList == null || displayList.Count == 0){
-					<p>No Items added yet...</p>
-				}else {
-					@foreach (var obj in displayList){
-						<div class="@ChangeColor(obj)" @onmousedown="StartClick" @onmouseup="(e) => EndClick(e,obj)" @onclick="(e)=> HandleClick(e,obj)">
-							@if(obj !=  null){
-								<p>@obj._item.Abbreviation</p>
-								<p>@obj._count</p>
-							}
+
+
+	@if(display is not null )
+		{
+           	<div class="row    mt-5">
+				@foreach(var entry in display)
+				{
+					@if(entry is not null && @entry._item is not null)
+					{
+						<div class="@($"col-1 d-flex flex-row border border-{GetColor(entry)} mx-2")" 
+										@onmousedown="StartClick" @onmouseup="(e) => EndClick(e, entry)"
+										@onclick="(e) => HandleClick(e, entry)">
+							<div class="flex-grow-1">
+								@entry._item.Abbreviation
+							</div>
+							<div class="@($" px-1 bg-{GetColor(entry)} text-white fw-bold")">
+								@entry._count
+							</div>
 						</div>
 					}
-				}
+				}		
 			</div>
+		}
+        	
                 <hr/>
-		<QuickGrid Items="@records.AsQueryable()" Class="table table-striped" >
-			<PropertyColumn Property="rec => Items.Where(i => i.Id == rec.ItemId).ToList()[0].ItemName" Title="Name" />
-			<PropertyColumn Property="rec => rec.Quantity" Title="Quantity"/>
-			<PropertyColumn Property="rec => Items.Where(i => i.Id == rec.ItemId).ToList()[0].PricePerUnit" Title="Unit Price"  />
-			<PropertyColumn Property="rec => rec.GetTotalPrice(Items.Where(i => i.Id == rec.ItemId).ToList()[0].PricePerUnit)" Title="Total Price" />
-			<TemplateColumn Context="rec">
-				<button type="button" @onclick="() => RemoveRecord(rec)" class="btn btn-danger">remove </button>
-			</TemplateColumn>
-		</QuickGrid>
+			@if(records is not null)
+			{
+				<QuickGrid Items="@records.AsQueryable()" Class="table table-striped">
+                    <TemplateColumn Context="record" Title="Item Name">
+                        @if(record.Item is not null){
+                            <div>@record.Item.ItemName</div>
+                        }
+                    </TemplateColumn>
+                    <PropertyColumn Property="record => record.Quantity" />
+                    <TemplateColumn Context="record" Title="Unit Price">
+                        @if(record.Item is not null){
+                            <div>@record.Item.PricePerUnit</div>
+                        }
+                    </TemplateColumn>
+                    <TemplateColumn Context="record" Title="Individual Totals">
+                        @if(record.Item is not null){
+                            <div>@(record.Item.PricePerUnit * record.Quantity )</div>
+                        }
+                    </TemplateColumn>
+
+				</QuickGrid>
+			}
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
         </div>
@@ -101,143 +112,150 @@ else
     [SupplyParameterFromForm]
     private Ticket? Ticket { get; set; }
 
-    private ItemTicket order_record = new ItemTicket();
-    private ICollection<ItemDisplay> displayList  = new List<ItemDisplay>();
+
+	//private ICollection<Order>? Ticket.Orders.ToList() ;
 	private ICollection<Item> Items = new List<Item>();
-    private ICollection<ItemTicket> records ;
-    
+	private ICollection<Display>? display ;
+    private ICollection<Order>? records ;    
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        Items = context.Item.ToList();
-        Ticket ??= await context.Ticket.Include(t => t.ItemTickets)
-					.ThenInclude(it => it.Item).FirstOrDefaultAsync(m => m.Id == Id);
+        Items = context.Items.ToList();
+        Ticket ??= await context.Tickets.Include(t => t.Orders)
+                                .ThenInclude( o => o.Item).FirstOrDefaultAsync(m => m.Id == Id);
 
         if (Ticket is null)
         {
             NavigationManager.NavigateTo("notfound");
         }
-		
-		PopulateDisplay();
-		records = Ticket.ItemTickets.ToList();
 
+        InitRecords();
+        PopulateDisplay();
+
+    }
+    public void InitRecords(){
+        if(Ticket is not null && Ticket.Orders.ToList() is not null)
+            records = Ticket.Orders.ToList();
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task UpdateTicket()
     {
-        using var context = DbFactory.CreateDbContext();
-        context.Attach(Ticket!).State = EntityState.Modified;
-		
-        try
-        {
-	    SaveItems();
-            await context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!TicketExists(Ticket!.Id))
-            {
-                NavigationManager.NavigateTo("notfound");
-            }
-            else
-            {
-                throw;
-            }
-        }
 
-        NavigationManager.NavigateTo("/tickets");
+        using var context = DbFactory.CreateDbContext();
+        var ticket = await context.Tickets.Include(t => t.Orders).FirstOrDefaultAsync( t => t.Id == Id);
+
+        context.Entry(ticket).CurrentValues.SetValues(Ticket);
+        var ordersToRemove = ticket.Orders.Where(order => !records.Any(r => r.Id == order.Id)).ToList();
+        context.Orders.RemoveRange(ordersToRemove);
+        
+        var newOrders = records.Where( r => r.Id == 0 ).ToList();
+        foreach(var order in newOrders){
+            ticket.Orders.Add(order);
+        }
+        foreach(var upOrder in records.Where(r => r.Id != 0)){
+            var existingOrder = ticket.Orders.FirstOrDefault( or => or.Id == upOrder.Id);
+            if(existingOrder != null){
+                context.Entry(existingOrder).CurrentValues.SetValues(upOrder);
+            }
+        }
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo($"/tickets/details?id={Id}");
     }
 
     private bool TicketExists(int id)
     {
         using var context = DbFactory.CreateDbContext();
-        return context.Ticket.Any(e => e.Id == id);
+        return context.Tickets.Any(e => e.Id == id);
     }
 
         private void AddItem()
 	{
-		order_record.TicketId = Ticket.Id;
-		if(records.Any(r => r.ItemId == order_record.ItemId)){
-			if(order_record.Quantity <= 0 ){
-				records.Remove(records.Where(r => r.ItemId == order_record.ItemId).ToList()[0]);
-			}else{
-			records.Where(r => r.ItemId == order_record.ItemId).ToList()[0].Quantity = order_record.Quantity;
-			}
-			
-		}else{
-			records.Add(order_record);
-			
-		}
-		displayList.Where(l => l._item.Id == order_record.ItemId).ToList()[0]._count = (int)order_record.Quantity;
-		order_record = new ItemTicket();
+		
 	}
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task AddTicket()
-    {
-        using var context = DbFactory.CreateDbContext();
-		SaveItems();
-        context.Ticket.Add(Ticket);
-        await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/tickets");
-    }
-	public void SaveItems()
+
+    public void RemoveRecord(Order rec)
 	{
-		foreach(var rec in records)
-		{
-			Ticket.ItemTickets.Add(rec);
-		}	
-	}
-    public void RemoveRecord(ItemTicket rec)
-	{
-		records.Remove(rec);
-		displayList.Where(l => l._item.Id == rec.ItemId).ToList()[0]._count = 0;
+
 	}
     public void PopulateDisplay()
 	{
-		foreach(var entry in Ticket.ItemTickets){
-			displayList.Add( new ItemDisplay{
-				_item = entry.Item,
-				_frequency = 0,
-				_count = (int)entry.Quantity
-			});
+        display = new List<Display>();
+		if(Items is not null){
+			foreach(var item in Items)
+			{
+                var count = 0;
+                if(Ticket is not null && Ticket.Orders.Any(o => o.ItemId == item.Id)){
+                    var order = Ticket.Orders.FirstOrDefault( o => o.ItemId == item.Id);
+                    if(order is not null)
+                        count = (int)order.Quantity;
+                }
+				display.Add(new Display{
+					_item = item,
+					_count = count
+				});
+			}
 		}
 	}
 	private bool isLongClick;
 	private DateTime mouseDownTime;
-	private const int LongClickThreshold = 1000;
+	private const int LongClickThreshold = 500;
 	public void StartClick()
 	{
 		mouseDownTime = DateTime.Now;
 		isLongClick = false;
 	}
-	public void EndClick(MouseEventArgs e, ItemDisplay it)
+	public void EndClick(MouseEventArgs e, Display d)
 	{
 	
 		var duration = (DateTime.Now - mouseDownTime).TotalMilliseconds;
-		isLongClick = duration >= LongClickThreshold;	
+		isLongClick = duration >= LongClickThreshold;
 		if(isLongClick)
-			it.ChangeState();
+		{
+			d._increase = !d._increase;
+		}			
 	}
-	public string ChangeColor(ItemDisplay it)
+	public void HandleClick(MouseEventArgs e, Display d)
 	{
-		var color = it._increase? "border-info" : "border-danger";
-		return $"col-sm-2 border p-2 border-2 {color}";
-	}
-	public void HandleClick(MouseEventArgs e, ItemDisplay it)
-	{
-		if(it._increase){
-			it.IncreaseCount();
-		}else{
-			if(it._count == 0) return;
-			if(it._count > 0 )it.DecreaseCount();
+		if(isLongClick){
+			isLongClick = !isLongClick;
+			return;
 		}
-		        order_record.ItemId = it._item.Id;
-                        order_record.Quantity = it._count;
-			AddItem();
-			
+		var currentRecord = new Order();
+		
+        if(records is not null) 
+			currentRecord = records.FirstOrDefault(r => r.Item == d._item);
+		
+        if(d._count == 0 && !d._increase) return;
 
+		d._count = d._increase ? d._count + 1 : d._count -= 1;
+		
+		if(d._count > 0 && d._item is not null){
+
+			if( currentRecord is not null && records is not null)
+			{
+					records.FirstOrDefault( r => r == currentRecord).Quantity = d._count;
+			}else{
+				var item = Items.FirstOrDefault(i => i.Id ==d._item.Id);
+				if(records != null && Items is not null && item is not null)
+					records.Add(new Order{
+						Item = item ,
+						Quantity = d._count,
+                        Ticket = Ticket
+					});
+			}
+		}else{
+            if(records!= null && currentRecord != null)
+                records.Remove(currentRecord);
+        }
+	}
+	public string GetColor(Display d ){
+		if(d._increase){
+			return "primary";
+		}
+		return "danger";
 	}
 }
-}
+

@@ -1,6 +1,6 @@
 @page "/items/create"
 @using Microsoft.EntityFrameworkCore
-@using SalesBook
+@using SalesBook.Models
 @using SalesBook.Data
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -75,7 +75,7 @@
     private async Task AddItem()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Item.Add(Item);
+        context.Items.Add(Item);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/items");
     }

@@ -11,8 +11,8 @@ using SalesBook.Data;
 namespace SalesBook.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250816155506_AddedQuantityToJointTable")]
-    partial class AddedQuantityToJointTable
+    [Migration("20250819124536_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -212,7 +212,7 @@ namespace SalesBook.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("SalesBook.Item", b =>
+            modelBuilder.Entity("SalesBook.Models.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -249,40 +249,35 @@ namespace SalesBook.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Item");
+                    b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("SalesBook.ItemTicket", b =>
+            modelBuilder.Entity("SalesBook.Models.Order", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("TicketId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ItemId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<decimal>("Quantity")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("TicketId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("TicketId", "ItemId");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("ItemId")
+                        .IsUnique();
 
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("ItemTicket");
+                    b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("SalesBook.Ticket", b =>
+            modelBuilder.Entity("SalesBook.Models.Ticket", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -300,9 +295,12 @@ namespace SalesBook.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("paid")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Ticket");
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -356,29 +354,33 @@ namespace SalesBook.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SalesBook.ItemTicket", b =>
+            modelBuilder.Entity("SalesBook.Models.Order", b =>
                 {
-                    b.HasOne("SalesBook.Item", null)
-                        .WithMany("ItemTickets")
-                        .HasForeignKey("ItemId")
+                    b.HasOne("SalesBook.Models.Item", "Item")
+                        .WithOne("Order")
+                        .HasForeignKey("SalesBook.Models.Order", "ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SalesBook.Ticket", null)
-                        .WithMany("ItemTickets")
+                    b.HasOne("SalesBook.Models.Ticket", "Ticket")
+                        .WithMany("Orders")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Ticket");
                 });
 
-            modelBuilder.Entity("SalesBook.Item", b =>
+            modelBuilder.Entity("SalesBook.Models.Item", b =>
                 {
-                    b.Navigation("ItemTickets");
+                    b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("SalesBook.Ticket", b =>
+            modelBuilder.Entity("SalesBook.Models.Ticket", b =>
                 {
-                    b.Navigation("ItemTickets");
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

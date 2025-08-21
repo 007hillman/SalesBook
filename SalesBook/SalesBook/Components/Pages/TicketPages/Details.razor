@@ -1,7 +1,7 @@
 @page "/tickets/details"
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
-@using SalesBook
+@using SalesBook.Models
 @using SalesBook.Data
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -32,33 +32,37 @@
             <a href="@($"/tickets/edit?id={ticket.Id}")">Edit</a> |
             <a href="@($"/tickets")">Back to List</a>
         </div>
+    @if(ticket.Orders is not null && ticket.Orders.ToList().Count > 0)
+    {
          <table class="table table-striped">
 		<thead>
 			<td>Item Name : </td>
-                       <td>Quantity : </td>
-                       <td>Unit price : </td>
-                       <td>Total Price : </td>
+            <td>Quantity : </td>
+            <td>Unit price : </td>
+            <td>Total Price : </td>
 		</thead>
 		<tbody>
-		@if(ticket != null){
-			@foreach(var entry in ticket.ItemTickets ){
-				<tr>
-					<td>@entry.Item.ItemName</td>
-                                        <td>@entry.Quantity</td>
-                                        <td>@entry.Item.PricePerUnit</td>
-                                        <td>@(entry.Item.PricePerUnit * entry.Quantity)</td>
-				</tr>	
-				}
-			}
+            @foreach(var order in ticket.Orders.ToList())
+            {
+                @if(@order.Item is not null)
+                {
+                <tr>
+                    <td>@order.Item.ItemName</td>
+                    <td>@order.Quantity</td>
+                    <td>@order.Item.PricePerUnit</td>
+                    <td>@(order.Item.PricePerUnit * order.Quantity)</td>
+                </tr>
+                }
+            }
 		</tbody>
 	</table>
 
+    }
     }
 </div>
 
 @code {
     private Ticket? ticket;
-    private int quantity;
     [SupplyParameterFromQuery]
     private int Id { get; set; }
 
@@ -67,8 +71,10 @@
     protected override async Task OnInitializedAsync()
     {
 	    	using var context = DbFactory.CreateDbContext();
-        	ticket = await context.Ticket.Include(t => t.ItemTickets)
-					.ThenInclude(it => it.Item).FirstOrDefaultAsync(t => t.Id == Id);
+        	ticket = await context.Tickets
+            .Include(t => t.Orders)
+            .ThenInclude(o => o.Item)
+            .FirstOrDefaultAsync(t => t.Id == Id);
         	if (ticket is null)
         	{
             		NavigationManager.NavigateTo("notfound");

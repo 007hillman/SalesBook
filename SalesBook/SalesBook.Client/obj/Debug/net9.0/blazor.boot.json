@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "SalesBook.Client",
   "resources": {
-    "hash": "sha256-oTXjeTB+gMaawwwsn46ApcFomKLLWievyMs/vE/z6s4=",
+    "hash": "sha256-355CzeyX6NE4XrKDMl0FRn2meD8/DaWpbzIbJ+MFQfI=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Authorization.bvu82j4ad3.wasm": "Microsoft.AspNetCore.Authorization.wasm",
       "Microsoft.AspNetCore.Components.ptfrz3fits.wasm": "Microsoft.AspNetCore.Components.wasm",
@@ -197,23 +197,23 @@
       "netstandard.uriri6ambh.wasm": "netstandard.wasm",
       "System.Private.CoreLib.s7q7c40kwm.wasm": "System.Private.CoreLib.wasm",
       "dotnet.js": "dotnet.js",
-      "dotnet.native.st0ovrfdhi.js": "dotnet.native.js",
-      "dotnet.native.67rumul467.wasm": "dotnet.native.wasm",
-      "dotnet.runtime.593bvuk5yc.js": "dotnet.runtime.js",
+      "dotnet.native.1p93gcv9fh.js": "dotnet.native.js",
+      "dotnet.native.9msu8ucn2h.wasm": "dotnet.native.wasm",
+      "dotnet.runtime.qrl1fuqt3c.js": "dotnet.runtime.js",
       "icudt_CJK.tjcz0u77k5.dat": "icudt_CJK.dat",
       "icudt_EFIGS.tptq2av103.dat": "icudt_EFIGS.dat",
       "icudt_no_CJK.lfu7j35m59.dat": "icudt_no_CJK.dat",
-      "SalesBook.Client.dpr2os7p6p.wasm": "SalesBook.Client.wasm",
-      "SalesBook.Client.kjf5qai6i0.pdb": "SalesBook.Client.pdb"
+      "SalesBook.Client.c1mphixjjf.wasm": "SalesBook.Client.wasm",
+      "SalesBook.Client.owozi22nn6.pdb": "SalesBook.Client.pdb"
     },
     "jsModuleNative": {
-      "dotnet.native.st0ovrfdhi.js": "sha256-MBW/zayfv+YU6mhH7y4b8NNU4D1EYd7nf9gYrFshnnY="
+      "dotnet.native.1p93gcv9fh.js": "sha256-1UPiprzN3JhPftx3be7XEMaYlUN+chRF41CuttiWVtQ="
     },
     "jsModuleRuntime": {
-      "dotnet.runtime.593bvuk5yc.js": "sha256-x+PnWU47EIr/zL3xxqIUMDJi/dy5904TVGunDqCvjIY="
+      "dotnet.runtime.qrl1fuqt3c.js": "sha256-ilTXrnUF4HKbIAFVIYlRmX3ryKNZpGUObkWMF0n2Kcg="
     },
     "wasmNative": {
-      "dotnet.native.67rumul467.wasm": "sha256-zrxfVswzVbeO5uCzmKKF3OONr7OzIJ3PhZOWz9t1Rs8="
+      "dotnet.native.9msu8ucn2h.wasm": "sha256-Yaw09m1FVxsROJ5Sa9f6SmuJebQT0b3hrKQIbo6qm5A="
     },
     "icu": {
       "icudt_CJK.tjcz0u77k5.dat": "sha256-SZLtQnRc0JkwqHab0VUVP7T3uBPSeYzxzDnpxPpUnHk=",
@@ -416,10 +416,10 @@
       "WindowsBase.pg3o6xzigg.wasm": "sha256-dz62CHynC+zqTkbMOf3vm7YAhiRA8/pIoAwuqHfBL5M=",
       "mscorlib.jl2pswegra.wasm": "sha256-mSoCIDTdCQKTipW8VmFCypW/4AopZauaYRa8LoZdHvY=",
       "netstandard.uriri6ambh.wasm": "sha256-yuH/cvPd6r8N9nfPWihyckFD7hPFP+VQtQQxEqi7HIQ=",
-      "SalesBook.Client.dpr2os7p6p.wasm": "sha256-P0/lkItal3/6mBOY8JebeYSywdL8xVp5FB4c2nr7mDk="
+      "SalesBook.Client.c1mphixjjf.wasm": "sha256-0ETU/SafNkoUEsasudnWaBCleyZwsl2c89KgjukJ8PY="
     },
     "pdb": {
-      "SalesBook.Client.kjf5qai6i0.pdb": "sha256-8D/PJRr2kJA4eS5TaAYBCpV5eM/GYy4NX2I1SSaE0YY="
+      "SalesBook.Client.owozi22nn6.pdb": "sha256-2OIwuTIa8NtoF406DKIXPgfPrr2ien6cV/kYvmgcQVY="
     }
   },
   "cacheBootResources": true,

@@ -1,6 +1,6 @@
 @page "/tickets/delete"
 @using Microsoft.EntityFrameworkCore
-@using SalesBook
+@using SalesBook.Models
 @using SalesBook.Data
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -50,7 +50,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        ticket = await context.Ticket.FirstOrDefaultAsync(m => m.Id == Id);
+        ticket = await context.Tickets.Include(t => t.Orders).FirstOrDefaultAsync(m => m.Id == Id);
 
         if (ticket is null)
         {
@@ -61,7 +61,7 @@
     private async Task DeleteTicket()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Ticket.Remove(ticket!);
+        context.Tickets.Remove(ticket!);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/tickets");
     }

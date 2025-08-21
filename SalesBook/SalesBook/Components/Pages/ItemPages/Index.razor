@@ -1,7 +1,7 @@
 @page "/items"
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
-@using SalesBook
+@using SalesBook.Models
 @using SalesBook.Data
 @implements IAsyncDisposable
 @inject NavigationManager NavigationManager
@@ -15,7 +15,7 @@
     <a href="items/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Item">
+<QuickGrid Class="table" Items="context.Items">
 		<TemplateColumn Context="item" Title="Name">
 			<div @onclick="() =>OnNameClick(item) "> @item.ItemName </div>
 		</TemplateColumn>
