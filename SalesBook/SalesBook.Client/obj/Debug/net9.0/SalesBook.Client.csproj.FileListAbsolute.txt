@@ -1084,8 +1084,6 @@
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/Microsoft.Win32.Registry.10xfh4xvhd.wasm
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/mscorlib.jl2pswegra.wasm
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/netstandard.uriri6ambh.wasm
-/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/SalesBook.Client.owozi22nn6.pdb
-/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/SalesBook.Client.c1mphixjjf.wasm
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.AppContext.juaach1ctn.wasm
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Buffers.tevaucknsr.wasm
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Collections.Concurrent.db6mieq8cw.wasm
@@ -1393,7 +1391,6 @@
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/Microsoft.Win32.Registry.10xfh4xvhd.wasm.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/Microsoft.Extensions.FileProviders.Abstractions.8bt7as0i9i.wasm.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Transactions.Local.iyerwqdgfh.wasm.gz
-/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/SalesBook.Client.owozi22nn6.pdb.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Xml.8bxt02qawp.wasm.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Net.HttpListener.291ybasbd5.wasm.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Runtime.CompilerServices.Unsafe.tikfkmjbfm.wasm.gz
@@ -1404,7 +1401,6 @@
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Web.kb7fjpryvy.wasm.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Net.Mail.f7c6cnpbzl.wasm.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Security.SecureString.22pvy7xdie.wasm.gz
-/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/SalesBook.Client.c1mphixjjf.wasm.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.Threading.Timer.rivg4u5uzk.wasm.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.IO.FileSystem.Primitives.xipxlxuqia.wasm.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/System.IO.FileSystem.DriveInfo.tmng2ufvun.wasm.gz
@@ -2070,9 +2066,6 @@
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/compressed/a42i5wu8hm-tjcz0u77k5.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/compressed/oug47bal8v-tptq2av103.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/compressed/7ynn5z58rq-lfu7j35m59.gz
-/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/compressed/ry010fa6lk-c1mphixjjf.gz
-/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/compressed/qkf8oin1yt-owozi22nn6.gz
-/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/compressed/sfhtls6x1f-268ts567nn.gz
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/staticwebassets.build.json
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/staticwebassets.development.json
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/staticwebassets.build.endpoints.json
@@ -2087,3 +2080,10 @@
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/refint/SalesBook.Client.dll
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/SalesBook.Client.pdb
 /home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/ref/SalesBook.Client.dll
+/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/SalesBook.Client.7fv861mpvk.pdb
+/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/SalesBook.Client.blg0de8a3e.wasm
+/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/SalesBook.Client.7fv861mpvk.pdb.gz
+/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/bin/Debug/net9.0/wwwroot/_framework/SalesBook.Client.blg0de8a3e.wasm.gz
+/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/compressed/ry010fa6lk-blg0de8a3e.gz
+/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/compressed/qkf8oin1yt-7fv861mpvk.gz
+/home/gaia/projectsInC/SalesBook/SalesBook/SalesBook.Client/obj/Debug/net9.0/compressed/sfhtls6x1f-h4p2ar0ekl.gz

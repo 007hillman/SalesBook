@@ -17,51 +17,62 @@
 
 <h2>Ticket</h2>
 <hr />
-<div class="row">
-    <div class="col-md-12">
-                    <EditForm method="post" Model="Ticket" OnValidSubmit="AddTicket" FormName="create" Enhance>
+    <div class="row">
+        <div class="col-md-10">
+            <EditForm method="post" Model="Ticket" OnValidSubmit="AddTicket" FormName="create" Enhance>
                 <DataAnnotationsValidator />
                 <ValidationSummary role="alert"/>
+                
+                <div class="row">
                 <input type="hidden" name="Ticket.Id" value="@Ticket.Id" />
-		<div class="row mb-3">
-                <div class="mb-3 col-md-4">
-                    <label for="tablenumber" class="form-label">TableNumber:</label>
+                <div class="mb-3 col-sm-6">
+                    <label for="tablenumber" class="form-label fw-semibold">Table Number:</label>
                     <InputNumber id="tablenumber" @bind-Value="Ticket.TableNumber" class="form-control" />
                     <ValidationMessage For="() => Ticket.TableNumber" class="text-danger" />
                 </div>
-                <div class="mb-3 col-md-4">
-                    <label for="clientname" class="form-label">ClientName:</label>
+                <div class="mb-3 col-sm-6">
+                    <label for="clientname" class="form-label fw-semibold">Client Name:</label>
                     <InputText id="clientname" @bind-Value="Ticket.ClientName" class="form-control" />
                     <ValidationMessage For="() => Ticket.ClientName" class="text-danger" />
                 </div>
-                <div class="mb-3 d-none col-md-2">
+                <div class="mb-3 col-sm-6">
+                    <label for="amountpaid" class="form-label fw-semibold">Amount given by client :</label>
+                    <InputNumber id="amountpaid" @bind-Value="Ticket.AmountPaid" class="form-control" @onchange="CalculateChange"/>
+                    <ValidationMessage For="() => Ticket.AmountPaid" class="text-danger" />
+                </div>
+
+                <div class="mb-3 col-sm-6 pt-4">
+                    <InputCheckbox id="transactioncompleted" @bind-Value="Ticket.TransactionCompleted" type="checkbox" class="form-check-input" />
+                    <label for="transactioncompleted" class="form-check-label fw-semibold">Transaction Completed?</label>
+                    <ValidationMessage For="() => Ticket.TransactionCompleted" class="text-danger" />
+                </div>
+                <div class="mb-3 d-none">
                     <label for="createdat" class="form-label">CreatedAt:</label>
                     <InputDate id="createdat" @bind-Value="Ticket.CreatedAt" class="form-control" />
                     <ValidationMessage For="() => Ticket.CreatedAt" class="text-danger" />
                 </div>
-                <div class="mb-3 d-none col-md-2">
+                <div class="mb-3 d-none">
                     <label for="updatedat" class="form-label">UpdatedAt:</label>
                     <InputDate id="updatedat" @bind-Value="Ticket.UpdatedAt" class="form-control" />
                     <ValidationMessage For="() => Ticket.UpdatedAt" class="text-danger" />
                 </div>
-		</div>
-		<div class="row mb-10">
-			
-		</div>
-		@if(display is not null )
+            </div>
+
+
+	@if(display is not null )
 		{
-           	<div class="row    mt-3">
+           	<div class="row   mt-5">
 				@foreach(var entry in display)
 				{
 					@if(entry is not null && @entry._item is not null)
 					{
-						<div class="@($"col-1 d-flex flex-row border border-{GetColor(entry)} mx-2")" 
+						<div class="@($"col-1 d-flex flex-row  border border-{GetColor(entry)} mx-2")" 
 										@onmousedown="StartClick" @onmouseup="(e) => EndClick(e, entry)"
 										@onclick="(e) => HandleClick(e, entry)">
-							<div class="flex-grow-1">
+							<div class="flex-grow-1 py-2">
 								@entry._item.Abbreviation
 							</div>
-							<div class="@($" px-1 bg-{GetColor(entry)} text-white fw-bold")">
+							<div class="@($" px-2  bg-{GetColor(entry)} text-white fw-bold fs-4")">
 								@entry._count
 							</div>
 						</div>
@@ -69,18 +80,18 @@
 				}		
 			</div>
 		}
+        	
                 <hr/>
 			@if(records is not null)
 			{
-<QuickGrid Items="@records.AsQueryable()" Class="table table-striped" >
-					
+                <QuickGrid Items="@records.AsQueryable()" Class="table table-striped">
                     <TemplateColumn Context="record" Title="Item Name">
                         @if(record.Item is not null){
                             <div>@record.Item.ItemName</div>
                         }
                     </TemplateColumn>
                     <PropertyColumn Property="record => record.Quantity" />
-                    <TemplateColumn Context="record">
+                    <TemplateColumn Context="record" Title="Unit Price">
                         @if(record.Item is not null){
                             <div>@record.Item.PricePerUnit</div>
                         }
@@ -90,13 +101,19 @@
                             <div>@(record.Item.PricePerUnit * record.Quantity )</div>
                         }
                     </TemplateColumn>
-
+					
 				</QuickGrid>
+                <div class="row mb-5 fw-bold fs-3">
+                    <div class="col-sm-8">TOTAL :</div>
+                    <div class="col-sm-2">
+                        @GetReceiptTotal()
+                    </div>
+                </div>
 			}
                 <button type="submit" class="btn btn-primary">Save</button>
-        </EditForm>
+            </EditForm>
+        </div>
     </div>
-</div>
 
 <div class="mt-5">
     <a href="/tickets">Back to List</a>
@@ -109,6 +126,7 @@
 	private ICollection<Order>? records ;
 	private ICollection<Item> Items = new List<Item>();
 	private ICollection<Display>? display ;
+	private decimal calculatedDifference {get; set;}
 	protected override void OnInitialized()
 	{
 		using var context = DbFactory.CreateDbContext();
@@ -211,4 +229,19 @@
 		}
 		return "danger";
 	}
+	public decimal GetReceiptTotal(){
+        	decimal total = 0.0M;
+	
+		if(records is not null )
+		{
+        	foreach(var record in records){
+				if(record.Item is not null)
+            		total += record.Item.PricePerUnit * (decimal)record.Quantity;
+        	}
+		}
+        return total;
+    }
+    public void CalculateChange(){
+        calculatedDifference = Ticket.AmountPaid - GetReceiptTotal();
+    }
 }

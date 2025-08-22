@@ -45,6 +45,6 @@ public class Item
 
 	public DateTime CreatedAt {get; set; } = DateTime.Now ;
 	public DateTime UpdatedAt {get; set; } = DateTime.Now;
-
-	public Order? Order { get; set;  }
+	
+	public Order? Order { get; set; }
 }

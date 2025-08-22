@@ -1,0 +1,52 @@
+@page "/tickets/orders/edit"
+@using Humanizer
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using NuGet.Packaging
+@using SalesBook.Models
+@using SalesBook.Data
+@using SalesBook.Utility
+@using System.Collections.ObjectModel
+@using System.ComponentModel
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+<div class="row">
+    <div class="col-md-10">
+    <EditForm method="post" Model="Order" OnInvalidSubmit="UpdateOrder" FormName="edit" Enhance>
+    @if(Order != null)
+    {
+        <div class="row">
+                <div class="mb-3 col-sm-4">
+                    <label for="" class="form-label fw-semibold">Discount amount per item:</label>
+                    <InputNumber id="clientname" @bind-Value="Order.Discount" class="form-control" />
+                    <ValidationMessage For="() => Order.Discount" class="text-danger" />
+                </div>
+                <div class="mt-1 pt-4 col-sm-4 flex ">
+                    <InputCheckbox id="wholesale" @bind-Value="Order.Wholesale" class="" />
+                    <label for="wholesale" class="form-label fw-semibold">WholeSale?</label>
+                </div>
+                <div class=" mt-1 pt-4 col-sm-4 flex">
+                    <InputCheckbox id="bottles" @bind-Value="Order.Bottles" class="" />
+                    <label for="bottles" class="form-label fw-semibold">Bottles?</label>
+                </div>
+        </div>
+    }
+    </EditForm>
+    </div>
+</div>
+@code{
+    [Parameter]
+    public int OrderId {get; set;}
+    [SupplyParameterFromForm]
+    private Order? Order {get; set;}
+    protected override void OnInitialized()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Order = context.Orders.FirstOrDefault( o => o.Id == OrderId);
+        base.OnInitialized();
+    }
+    public void UpdateOrder(){
+
+    }
+}

@@ -1,4 +1,5 @@
 @page "/tickets/details"
+@using Humanizer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using SalesBook.Models
@@ -18,24 +19,52 @@
         <p><em>Loading...</em></p>
     }
     else {
-        <dl class="row">
-            <dt class="col-sm-2">Table Number</dt>
-            <dd class="col-sm-10">@ticket.TableNumber</dd>
-            <dt class="col-sm-2">Client Name</dt>
-            <dd class="col-sm-10">@ticket.ClientName</dd>
-            <dt class="col-sm-2">Date Issued :</dt>
-            <dd class="col-sm-10">@ticket.CreatedAt</dd>
-            <dt class="col-sm-2">Date Changed : </dt>
-            <dd class="col-sm-10">@ticket.UpdatedAt</dd>
-        </dl>
-        <div>
-            <a href="@($"/tickets/edit?id={ticket.Id}")">Edit</a> |
-            <a href="@($"/tickets")">Back to List</a>
+        <div class="row mb-5">
+            <div class="col-sm-6">
+                <dl class="row">
+                    <dt class="col-sm-4">Table Number</dt>
+                    <dd class="col-sm-6">@ticket.TableNumber</dd>
+                    <dt class="col-sm-4">Client Name</dt>
+                    <dd class="col-sm-6">@ticket.ClientName</dd>
+                    <dt class="col-sm-4">Date Issued :</dt>
+                    <dd class="col-sm-6">@ticket.CreatedAt.ToString("MMM dd, yyyy (ddd) hh:mm tt")</dd>
+                    <dt class="col-sm-4">Date Changed : </dt>
+                    <dd class="col-sm-6">@ticket.UpdatedAt.ToString("MMM dd, yyyy (ddd) hh:mm tt")</dd>
+                </dl>
+                <div>
+                    <a href="@($"/tickets/edit?id={ticket.Id}")">Edit</a> |
+                    <a href="@($"/tickets")">Back to List</a>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <CreatePayment ticketId=ticket.Id />
+            </div>
         </div>
+    <div class="mb-3 fs-3">
+    @if(!ticket.TransactionCompleted)
+    {
+        @if( sum - ticket.GetTotal() < 0)
+        {
+            <div class="text-danger"> Amount Owed = @(ticket.GetTotal() - sum) FCFA</div>
+        }
+        else{
+            <div class=""> Change required = @(sum - ticket.GetTotal() ) FCFA</div>
+        }
+    }
+    else{
+            <div class=""> Change required = 0.0 FCFA</div>
+    }
+
+    </div>
+    <div class="d-none">
+                    <EditOrder OrderId=orderId />
+    </div>
+
+    <h3>Ticket Summary </h3>
     @if(ticket.Orders is not null && ticket.Orders.ToList().Count > 0)
     {
-         <table class="table table-striped">
-		<thead>
+         <table class="table table-striped mb-5">
+		<thead class="fw-bold fs-5">
 			<td>Item Name : </td>
             <td>Quantity : </td>
             <td>Unit price : </td>
@@ -49,15 +78,37 @@
                 <tr>
                     <td>@order.Item.ItemName</td>
                     <td>@order.Quantity</td>
-                    <td>@order.Item.PricePerUnit</td>
-                    <td>@(order.Item.PricePerUnit * order.Quantity)</td>
+                    <td>@order.Item.PricePerUnit FCFA</td>
+                    <td>@(order.Item.PricePerUnit * order.Quantity) FCFA</td>
                 </tr>
                 }
+                            
             }
+            <tr class="fw-bold fs-4">
+                <td>TOTAL ORDERED : </td> <td></td><td></td><td>@ticket.GetTotal() FCFA</td>
+            </tr>
 		</tbody>
 	</table>
-
     }
+    <h4>Payments summary </h4>
+        <table class="table table-striped">
+            <thead class="fw-semibold fs-5">
+                <td>Date of Deposit</td>
+                <td>Amount deposited</td>
+            </thead>
+            <tbody>
+                @foreach(var payment in ticket.Payments){
+                    <tr>
+                        <td>@payment.CreatedAt</td>
+                        <td>@payment.Amount</td>
+                    </tr>
+                }
+                <tr class="fw-bold fs-4">
+                    <td>TOTAL PAID: </td>
+                    <td>@sum</td>
+                </tr>
+            </tbody>
+        </table>
     }
 </div>
 
@@ -65,19 +116,33 @@
     private Ticket? ticket;
     [SupplyParameterFromQuery]
     private int Id { get; set; }
-
-    
-    private ICollection<Item> Items = new List<Item>(); 
+    private ICollection<Item> Items = new List<Item>();
+    private decimal sum {get; set; } = 0.0M;
+    private int orderId {get; set;} 
     protected override async Task OnInitializedAsync()
     {
 	    	using var context = DbFactory.CreateDbContext();
         	ticket = await context.Tickets
             .Include(t => t.Orders)
             .ThenInclude(o => o.Item)
+            .Include(t => t.Payments)
             .FirstOrDefaultAsync(t => t.Id == Id);
         	if (ticket is null)
         	{
             		NavigationManager.NavigateTo("notfound");
         	}
+        CalculateSum();
+        if(ticket != null && ticket.Orders is not null)
+            orderId = ticket.Orders.FirstOrDefault().Id;
     }
+    public void CalculateSum(){
+        if(ticket != null && ticket.Payments != null)
+        {
+            foreach(var payment in ticket.Payments )
+            {
+                sum += payment.Amount;
+            }
+        }
+    }
+
 }

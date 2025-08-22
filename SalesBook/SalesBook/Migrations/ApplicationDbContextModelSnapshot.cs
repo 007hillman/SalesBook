@@ -209,6 +209,23 @@ namespace SalesBook.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("SalesBook.Models.Inventory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Inventories");
+                });
+
             modelBuilder.Entity("SalesBook.Models.Item", b =>
                 {
                     b.Property<int>("Id")
@@ -255,8 +272,17 @@ namespace SalesBook.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Bottles")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("InventoryId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
@@ -267,13 +293,21 @@ namespace SalesBook.Migrations
                     b.Property<decimal>("Quantity")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("Sale")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("TicketId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("Wholesale")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("InventoryId");
 
                     b.HasIndex("ItemId");
 
@@ -285,11 +319,39 @@ namespace SalesBook.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("SalesBook.Models.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("SalesBook.Models.Ticket", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ClientName")
                         .HasColumnType("TEXT");
@@ -300,11 +362,11 @@ namespace SalesBook.Migrations
                     b.Property<int>("TableNumber")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("TransactionCompleted")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("paid")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -364,6 +426,12 @@ namespace SalesBook.Migrations
 
             modelBuilder.Entity("SalesBook.Models.Order", b =>
                 {
+                    b.HasOne("SalesBook.Models.Inventory", "Inventory")
+                        .WithMany("Orders")
+                        .HasForeignKey("InventoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SalesBook.Models.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
@@ -380,9 +448,27 @@ namespace SalesBook.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Inventory");
+
                     b.Navigation("Item");
 
                     b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("SalesBook.Models.Payment", b =>
+                {
+                    b.HasOne("SalesBook.Models.Ticket", "Ticket")
+                        .WithMany("Payments")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("SalesBook.Models.Inventory", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("SalesBook.Models.Item", b =>
@@ -393,6 +479,8 @@ namespace SalesBook.Migrations
             modelBuilder.Entity("SalesBook.Models.Ticket", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

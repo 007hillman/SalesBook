@@ -1,0 +1,41 @@
+@page "/tickets/payments/create"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using NuGet.Packaging
+@using SalesBook.Models
+@using SalesBook.Data
+@using SalesBook.Utility
+@using System.Collections.ObjectModel
+@using System.ComponentModel
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+ @if(Payment != null)
+            {
+                <EditForm  Model="Payment" OnValidSubmit="MakePayment" Enhance>
+                    <div class="mb-3 col-sm-6">
+                        <label for="amountpaid" class="form-label fw-semibold">Amount given by client :</label>
+                        <InputNumber id="amountpaid" @bind-Value="Payment.Amount" class="form-control" />
+                        <ValidationMessage For="() => Payment.Amount" class="text-danger" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enter Payment</button>
+                </EditForm>
+            }
+
+
+@code{
+    [Parameter]
+    public int ticketId {get; set;}
+    private Payment Payment {get; set;} = new Payment();
+    
+    public async Task MakePayment(){
+        using var context = DbFactory.CreateDbContext();
+        if(Payment != null && ticketId != null)
+            Payment.TicketId = ticketId;
+        context.Payments.Add(Payment);
+        await context.SaveChangesAsync();
+        Payment = new Payment();
+        NavigationManager.NavigateTo($"/tickets/details?id={ticketId}");
+    }
+}

@@ -1,0 +1,44 @@
+@page "/inventories/details"
+@using Microsoft.EntityFrameworkCore
+@using SalesBook.Models
+@inject IDbContextFactory<SalesBook.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Inventory</h2>
+    <hr />
+    @if (inventory is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+        </dl>
+        <div>
+            <a href="@($"/inventories/edit?id={inventory.Id}")">Edit</a> |
+            <a href="@($"/inventories")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Inventory? inventory;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        inventory = await context.Inventories.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (inventory is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

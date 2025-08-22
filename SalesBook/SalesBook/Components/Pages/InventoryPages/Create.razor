@@ -1,0 +1,39 @@
+@page "/inventories/create"
+@using Microsoft.EntityFrameworkCore
+@using SalesBook.Models
+@inject IDbContextFactory<SalesBook.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Inventory</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Inventory" OnValidSubmit="AddInventory" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/inventories">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Inventory Inventory { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddInventory()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Inventories.Add(Inventory);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/inventories");
+    }
+}

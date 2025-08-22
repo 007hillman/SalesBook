@@ -51,6 +51,20 @@ namespace SalesBook.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Inventories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inventories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -79,7 +93,8 @@ namespace SalesBook.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     TableNumber = table.Column<int>(type: "INTEGER", nullable: false),
                     ClientName = table.Column<string>(type: "TEXT", nullable: true),
-                    paid = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TransactionCompleted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AmountPaid = table.Column<decimal>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -198,23 +213,64 @@ namespace SalesBook.Migrations
                 name: "Orders",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     ItemId = table.Column<int>(type: "INTEGER", nullable: false),
                     TicketId = table.Column<int>(type: "INTEGER", nullable: false),
+                    InventoryId = table.Column<int>(type: "INTEGER", nullable: false),
                     Quantity = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Discount = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Wholesale = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Bottles = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Sale = table.Column<bool>(type: "INTEGER", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ItemId1 = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => new { x.TicketId, x.ItemId });
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Inventories_InventoryId",
+                        column: x => x.InventoryId,
+                        principalTable: "Inventories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Items_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Items",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Items_ItemId1",
+                        column: x => x.ItemId1,
+                        principalTable: "Items",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Amount = table.Column<decimal>(type: "TEXT", nullable: false),
+                    TicketId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Tickets_TicketId",
                         column: x => x.TicketId,
                         principalTable: "Tickets",
                         principalColumn: "Id",
@@ -259,10 +315,30 @@ namespace SalesBook.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_InventoryId",
+                table: "Orders",
+                column: "InventoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_ItemId",
                 table: "Orders",
-                column: "ItemId",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ItemId1",
+                table: "Orders",
+                column: "ItemId1",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_TicketId",
+                table: "Orders",
+                column: "TicketId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_TicketId",
+                table: "Payments",
+                column: "TicketId");
         }
 
         /// <inheritdoc />
@@ -287,10 +363,16 @@ namespace SalesBook.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "Payments");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Inventories");
 
             migrationBuilder.DropTable(
                 name: "Items");
